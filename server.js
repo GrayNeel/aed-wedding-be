@@ -19,6 +19,10 @@ const usersDao = require('./usersDao');
 const invitationsDao = require('./invitationsDao');
 const guestsDao = require('./guestsDao');
 
+/* Enable CORS */
+const cors = require('cors');
+app.use(cors());
+
 /********************************* Session Management ************************************/
 
 /** Middleware for log-in and log-out */
@@ -115,6 +119,36 @@ app.get('/api/guests', (req, res) => {
   });
 });
 
+/* Return an invitation including all guests */
+app.get('/api/invitations/:invitationId', (req, res) => {
+  let invitationId = req.params.invitationId;
+
+  // InvitationId must be 6 digits 
+  if (invitationId.length != 6) {
+    res.status(400).json({ error: 'Invalid invitationId' });
+    return;
+  }
+
+  invitationsDao.getInvitationById(invitationId).then(invitation => {
+    if (!invitation) {
+      res.status(404).json({ error: 'Invitation not found' });
+    } else {
+      guestsDao.getAllGuestsOfInvitation(invitationId).then(guests => {
+        if (Object.entries(guests).length === 0)
+          res.status(404).json({ error: "No guests found" });
+        else {
+          invitation.guests = guests;
+          res.json(invitation);
+        }
+      }).catch(err => {
+        res.status(500).json({ error: 'An error occurred', description: err });
+      });
+    }
+  }).catch(err => {
+    res.status(500).json({ error: 'An error occurred', description: err });
+  });
+});
+
 /* Return all guests of a given invitation to a logged user */
 app.get('/api/invitations/:invitationId/guests', (req, res) => {
   let invitationId = req.params.invitationId;
@@ -122,6 +156,7 @@ app.get('/api/invitations/:invitationId/guests', (req, res) => {
   // InvitationId must be 6 digits 
   if (invitationId.length != 6) {
     res.status(400).json({ error: 'Invalid invitationId' });
+    return;
   }
 
   // Check if the invitation exists
@@ -198,6 +233,7 @@ app.post('/api/invitations/:invitationId/guests',
     // InvitationId must be 6 digits 
     if (invitationId.length != 6) {
       res.status(400).json({ error: 'Invalid invitationId' });
+      return;
     }
 
     // Check if the invitation exists
@@ -258,6 +294,7 @@ app.delete('/api/invitations/:invitationId', (req, res) => {
   // InvitationId must be 6 digits 
   if (invitationId.length != 6) {
     res.status(400).json({ error: 'Invalid invitationId' });
+    return;
   }
 
   // Check if the invitation exists
@@ -344,6 +381,7 @@ app.put('/api/invitations/:invitationId',
   // InvitationId must be 6 digits 
   if (invitationId.length != 6) {
     res.status(400).json({ error: 'Invalid invitationId' });
+    return;
   }
 
   // Check if the invitation exists

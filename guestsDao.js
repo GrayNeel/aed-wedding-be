@@ -52,9 +52,9 @@ exports.getAllGuestsOfInvitation = (invitationId) => {
             const guests = rows.map((i) => ({
                 guestId: i.guest_id, 
                 invitationId: i.invitation_id,
-                full_name: i.full_name, 
-                menu_type: i.menu_type, 
-                menu_kids: i.menu_kids,
+                fullName: i.full_name, 
+                menuType: i.menu_type, 
+                menuKids: i.menu_kids,
                 needs: i.needs,
                 status: i.status, 
                 estimatedPartecipation: i.estimated_partecipation

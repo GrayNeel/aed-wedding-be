@@ -9,6 +9,9 @@ Content-Type: application/json
 ### Get all available invitations
 GET http://localhost:3001/api/invitations
 
+### Get an invitation
+GET http://localhost:3001/api/invitations/945906
+
 ### Add guest to an invitation
 POST http://localhost:3001/api/invitations/945906/guests
 Content-Type: application/json
