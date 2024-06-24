@@ -29,12 +29,12 @@ PUT http://localhost:3001/api/invitations/945906
 Content-Type: application/json
 
 {
-  "comment": "Verremo il giorno prima!",
+  "comment": "Verremo il giorno priaama!",
   "guests": [
     {
       "guestId": 1,
       "menuType": "Standard",
-      "menuKids": 0,
+      "menuKids": 1,
       "needs": "Autonomous",
       "status": "Accepted"
     },

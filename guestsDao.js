@@ -92,6 +92,71 @@ exports.editGuest = (guestId, fullName, menuType, menuKids, needs, status, estim
     })
 }
 
+exports.editMultipleGuests = async (guests) => {
+    return new Promise((resolve, reject) => {
+        db.beginTransaction(err => {
+            if (err) { reject(err); return; }
+
+            const promises = guests.map(guest => {
+                return new Promise((resolve, reject) => {
+                    const { guestId, fullName, menuType, menuKids, needs, status, estimatedPartecipation } = guest;
+                    let updateSql = `UPDATE guests SET `;
+                    const updateParams = [];
+                    if (fullName !== undefined) {
+                        updateParams.push(fullName);
+                        updateSql += `full_name = ?, `;
+                    }
+                    if (menuType !== undefined) {
+                        updateParams.push(menuType);
+                        updateSql += `menu_type = ?, `;
+                    }
+                    if (menuKids !== undefined) {
+                        updateParams.push(menuKids);
+                        updateSql += `menu_kids = ?, `;
+                    }
+                    if (needs !== undefined) {
+                        updateParams.push(needs);
+                        updateSql += `needs = ?, `;
+                    }
+                    if (status !== undefined) {
+                        updateParams.push(status);
+                        updateSql += `status = ?, `;
+                    }   
+                    if (estimatedPartecipation !== undefined) {
+                        updateParams.push(estimatedPartecipation);
+                        updateSql += `estimated_partecipation = ?, `;
+                    }
+
+                    // Remove trailing comma and space
+                    updateSql = updateSql.slice(0, -2);
+                    updateSql += ` WHERE guest_id = ?`;
+                    updateParams.push(guestId);
+
+                    db.query(updateSql, updateParams, function(err) {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve();
+                    });
+                });
+            });
+
+            Promise.all(promises).then(() => {
+                db.commit(err => {
+                    if (err) {
+                        db.rollback(() => reject(err));
+                        return;
+                    }
+                    resolve('Update successful');
+                });
+            }).catch(err => {
+                db.rollback(() => reject(err));
+            });
+        });
+    });
+}
+
 // Delete a guest by its id
 exports.deleteGuest = (guestId) => {
     return new Promise((resolve, reject) => {

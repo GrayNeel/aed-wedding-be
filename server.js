@@ -381,8 +381,7 @@ app.put('/api/invitations/:invitationId',
         status = 'Declined';
       else if(!allAccepted && !allDeclined)
         status = 'Partially Accepted';
-      
-      console.log("Prima della getAllGuestsOfInvitation");
+
       // Check that all guestsId provided by input are in the invitation
       guestsDao.getAllGuestsOfInvitation(invitationId).then(invitationGuests => {
         let guestsId = invitationGuests.map(guest => guest.guestId);
@@ -401,12 +400,10 @@ app.put('/api/invitations/:invitationId',
           // Update the invitation
           invitationsDao.editInvitation(invitationId, invitation.name, status, comment).then(() => {
             // Update all guests
-            // TODO: BROKEN HERE
-            guests.forEach(guest => {
-              guestsDao.editGuest(guest.guestId, guest.menuType, guest.menuKids, guest.needs, guest.status).then(() => {
-              }).catch(err => {
-                res.status(500).json({ error: 'An error occurred while editing a guest', description: err });
-              });
+            guestsDao.editMultipleGuests(guests).then(() => {
+              res.status(204).end();
+            }).catch(err => {
+              res.status(500).json({ error: 'An error occurred while editing guests', description: err });
             });
           }).catch(err => {
             res.status(500).json({ error: 'An error occurred while editing invitation', description: err });
