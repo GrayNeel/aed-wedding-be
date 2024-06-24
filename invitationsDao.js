@@ -1,6 +1,8 @@
 'use strict';
 
 const mysql = require('mysql2');
+// Load environment variables
+require('dotenv').config();
 
 // Connection to the database
 const db = mysql.createConnection({
