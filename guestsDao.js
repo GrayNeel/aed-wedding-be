@@ -96,7 +96,7 @@ exports.editGuest = (guestId, fullName, menuType, menuKids, needs, status, estim
 exports.deleteGuest = (guestId) => {
     return new Promise((resolve, reject) => {
         const sql = 'DELETE FROM guests WHERE guest_id = ?';
-        db.run(sql, [guestId], function(err) {
+        db.query(sql, [guestId], function(err) {
             if (err) {
                 reject(err);
                 return;
@@ -105,3 +105,30 @@ exports.deleteGuest = (guestId) => {
         })
     })
 }
+
+exports.deleteAllGuestsOfInvitation = (invitationId) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM guests WHERE invitation_id = ?';
+        db.query(sql, [invitationId], function(err) {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(this.changes);
+        });
+    });
+};
+// Get the maximum guest id
+exports.getMaxGuestId = () => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT MAX(guest_id) as max_guest_id FROM guests';
+        db.query(sql, (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(rows[0].max_guest_id);
+        })
+    })
+}
+

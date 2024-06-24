@@ -49,7 +49,7 @@ async function createTables() {
       menu_kids BOOLEAN NOT NULL DEFAULT FALSE,
       needs ENUM('Autonomous', 'Bus-Only', 'Bus-And-Hotel', 'Hotel-Only') NOT NULL DEFAULT 'Autonomous',
       status ENUM('Pending', 'Accepted', 'Declined') NOT NULL DEFAULT 'Pending',
-      estimated_partecipation ENUM('Yes', 'No') NOT NULL DEFAULT 'Yes',
+      estimated_partecipation BOOLEAN NOT NULL DEFAULT TRUE,
       FOREIGN KEY (invitation_id) REFERENCES invitations(invitation_id) ON DELETE SET NULL
     );
   `;

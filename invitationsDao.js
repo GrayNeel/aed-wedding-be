@@ -32,7 +32,7 @@ exports.getAllInvitationsWithGuests = () => {
 
             const guestPromises = invitations.map((invitation) => {
                 return new Promise((resolve, reject) => {
-                    const sql = 'SELECT guest_id, fullname, menu_type, menu_kids, needs, status FROM guests WHERE invitation_id = ?';
+                    const sql = 'SELECT guest_id, full_name, menu_type, menu_kids, needs, status, estimated_partecipation FROM guests WHERE invitation_id = ?';
                     db.query(sql, [invitation.invitationId], (err, guestRows) => {
                         if (err) {
                             reject(err);
@@ -45,7 +45,8 @@ exports.getAllInvitationsWithGuests = () => {
                             menuType: g.menu_type,
                             menuKids: g.menu_kids,
                             needs: g.needs,
-                            status: g.status
+                            status: g.status,
+                            estimatedPartecipation: g.estimated_partecipation
                         }));
 
                         invitation.guests = guests;
@@ -103,6 +104,25 @@ exports.editInvitation = (invitationId, name, status, comment) => {
                 return;
             }
             resolve();
+        });
+    });
+};
+
+// Get an invitation by its id
+exports.getInvitationById = (invitationId) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM invitations WHERE invitation_id = ?';
+        db.query(sql, [invitationId], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            if (rows.length > 0) {
+                resolve(rows[0]);
+            } else {
+                resolve(null);
+            }
         });
     });
 };

@@ -1,0 +1,49 @@
+### Add an invitation
+POST http://localhost:3001/api/invitations
+Content-Type: application/json
+
+{
+  "name": "Marco & Maria"
+}
+
+### Get all available invitations
+GET http://localhost:3001/api/invitations
+
+### Add guest to an invitation
+POST http://localhost:3001/api/invitations/945906/guests
+Content-Type: application/json
+
+{
+  "fullName": "Maria Rossi",
+  "estimatedPartecipation": true
+}
+
+### Get all guests for an invitation
+GET http://localhost:3001/api/invitations/945906/guests
+
+### Delete invitation
+DELETE http://localhost:3001/api/invitations/945906
+
+### Send confirmation
+PUT http://localhost:3001/api/invitations/945906
+Content-Type: application/json
+
+{
+  "comment": "Verremo il giorno prima!",
+  "guests": [
+    {
+      "guestId": 1,
+      "menuType": "Standard",
+      "menuKids": 0,
+      "needs": "Autonomous",
+      "status": "Accepted"
+    },
+    {
+      "guestId": 2,
+      "menuType": "Standard",
+      "menuKids": 0,
+      "needs": "Autonomous",
+      "status": "Declined"
+    }
+  ]
+}
