@@ -3,10 +3,10 @@ const bcrypt = require('bcrypt');
 
 // DB Connection. Variables are taken from .env file
 const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER, 
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  host: 'localhost', // Cambia se il database non è in locale
+  user: 'admin', // Sostituisci con il tuo utente del database
+  password: 'password', // Sostituisci con la tua password del database
+  database: 'weddings'
 });
 
 // Function to execute queries using promises
