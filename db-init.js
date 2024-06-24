@@ -42,10 +42,11 @@ async function createTables() {
 
   const createGuestsTable = `
     CREATE TABLE IF NOT EXISTS guests (
-      guest_id CHAR(36) PRIMARY KEY,
+      guest_id INT AUTO_INCREMENT PRIMARY KEY,
       invitation_id INT,
-      fullname VARCHAR(100) NOT NULL,
+      full_name VARCHAR(100) NOT NULL,
       menu_type ENUM('Standard', 'Vegetarian', 'Vegan', 'Gluten-Free', 'Lactose-Free') NOT NULL DEFAULT 'Standard',
+      menu_kids BOOLEAN NOT NULL DEFAULT FALSE,
       needs ENUM('Autonomous', 'Bus-Only', 'Bus-And-Hotel', 'Hotel-Only') NOT NULL DEFAULT 'Autonomous',
       status ENUM('Pending', 'Accepted', 'Declined') NOT NULL DEFAULT 'Pending',
       estimated_partecipation ENUM('Yes', 'No') NOT NULL DEFAULT 'Yes',
