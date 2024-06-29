@@ -24,6 +24,7 @@ exports.getAllInvitationsWithGuests = () => {
 
             const invitations = invitationRows.map((i) => ({
                 invitationId: i.invitation_id,
+                invitationNumber: i.invitation_number,
                 name: i.name,
                 status: i.status,
                 comment: i.comment,

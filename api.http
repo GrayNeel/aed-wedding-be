@@ -28,7 +28,7 @@ GET http://localhost:3001/api/invitations/945906/guests
 DELETE http://localhost:3001/api/invitations/945906
 
 ### Send confirmation
-PUT http://localhost:3001/api/invitations/945906
+PUT http://localhost:3001/api/invitations/544233
 Content-Type: application/json
 
 {
@@ -39,14 +39,16 @@ Content-Type: application/json
       "menuType": "Standard",
       "menuKids": 1,
       "needs": "Autonomous",
-      "status": "Accepted"
+      "status": "Accepted",
+      "nightsNeeded": "None"
     },
     {
       "guestId": 2,
       "menuType": "Standard",
       "menuKids": 0,
-      "needs": "Autonomous",
-      "status": "Declined"
+      "needs": "Bus-And-Hotel",
+      "status": "Accepted",
+      "nightsNeeded": "21-Only"
     }
   ]
 }

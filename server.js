@@ -403,9 +403,15 @@ app.put('/api/invitations/:invitationId',
             res.status(400).json({ error: 'Invalid nightsNeeded' });
             return;
           }
+
+          // If needs is not 'Bus-And-Hotel' or 'Hotel-Only' then nightsNeeded must be 'None'
+          if (guest.needs != 'Bus-And-Hotel' && guest.needs != 'Hotel-Only' && guest.nightsNeeded != 'None') {
+            res.status(400).json({ error: 'Invalid nightsNeeded' });
+            return;
+          }
         }
       });
-
+      
       // Get the status of each guest in guests variable
       let allAccepted = true;
 
