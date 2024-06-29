@@ -396,6 +396,16 @@ app.put('/api/invitations/:invitationId',
       if (!comment)
         comment = '';
 
+      // Check if nightsNeeded exists for each guest. If it exists, then check the content
+      guests.forEach(guest => {
+        if (guest.nightsNeeded) {
+          if (guest.nightsNeeded != 'Both' && guest.nightsNeeded != '21-Only' && guest.nightsNeeded != '22-Only' && guest.nightsNeeded != 'None') {
+            res.status(400).json({ error: 'Invalid nightsNeeded' });
+            return;
+          }
+        }
+      });
+
       // Get the status of each guest in guests variable
       let allAccepted = true;
 

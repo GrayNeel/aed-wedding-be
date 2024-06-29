@@ -32,7 +32,7 @@ exports.getAllInvitationsWithGuests = () => {
 
             const guestPromises = invitations.map((invitation) => {
                 return new Promise((resolve, reject) => {
-                    const sql = 'SELECT guest_id, full_name, menu_type, menu_kids, needs, status, estimated_partecipation FROM guests WHERE invitation_id = ?';
+                    const sql = 'SELECT guest_id, full_name, menu_type, menu_kids, needs, status, nights_needed, estimated_partecipation FROM guests WHERE invitation_id = ?';
                     db.query(sql, [invitation.invitationId], (err, guestRows) => {
                         if (err) {
                             reject(err);
@@ -46,6 +46,7 @@ exports.getAllInvitationsWithGuests = () => {
                             menuKids: g.menu_kids,
                             needs: g.needs,
                             status: g.status,
+                            nightsNeeded: g.nights_needed,
                             estimatedPartecipation: g.estimated_partecipation
                         }));
 

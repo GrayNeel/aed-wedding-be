@@ -13,7 +13,7 @@ GET http://localhost:3001/api/invitations
 GET http://localhost:3001/api/invitations/945906
 
 ### Add guest to an invitation
-POST http://localhost:3001/api/invitations/945906/guests
+POST http://localhost:3001/api/invitations/544233/guests
 Content-Type: application/json
 
 {

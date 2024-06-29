@@ -31,6 +31,7 @@ exports.getAllGuests = () => {
                 menu_kids: i.menu_kids, 
                 needs: i.needs,
                 status: i.status, 
+                nightsNeeded: i.nights_needed,
                 estimatedPartecipation: i.estimated_partecipation
             }));
             
@@ -57,6 +58,7 @@ exports.getAllGuestsOfInvitation = (invitationId) => {
                 menuKids: i.menu_kids,
                 needs: i.needs,
                 status: i.status, 
+                nightsNeeded: i.nights_needed,
                 estimatedPartecipation: i.estimated_partecipation
             }));
             resolve(guests);
@@ -65,10 +67,10 @@ exports.getAllGuestsOfInvitation = (invitationId) => {
 };
 
 // Add a new guest of a given invitation to the database by adding name, surname and estimated_partecipation
-exports.addGuest = (guestId, invitationId, fullName, menuType, menuKids, needs, status, estimatedPartecipation) => {
+exports.addGuest = (guestId, invitationId, fullName, menuType, menuKids, needs, status, nightsNeeded, estimatedPartecipation) => {
     return new Promise((resolve, reject) => {
-        const sql = 'INSERT INTO guests (guest_id, invitation_id, full_name, menu_type, menu_kids, needs, status, estimated_partecipation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-        db.query(sql, [guestId, invitationId, fullName, menuType, menuKids, needs, status, estimatedPartecipation], function(err) {
+        const sql = 'INSERT INTO guests (guest_id, invitation_id, full_name, menu_type, menu_kids, needs, status, nightsNeeded, estimated_partecipation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+        db.query(sql, [guestId, invitationId, fullName, menuType, menuKids, needs, status, nightsNeeded, estimatedPartecipation], function(err) {
             if (err) {
                 reject(err);
                 return;
@@ -79,10 +81,10 @@ exports.addGuest = (guestId, invitationId, fullName, menuType, menuKids, needs, 
 }
 
 // Edit a guest by its id
-exports.editGuest = (guestId, fullName, menuType, menuKids, needs, status, estimatedPartecipation) => {
+exports.editGuest = (guestId, fullName, menuType, menuKids, needs, status, nightsNeeded, estimatedPartecipation) => {
     return new Promise((resolve, reject) => {
-        const sql = 'UPDATE guests SET full_name = ?, menu_type = ?, menu_kids = ?, needs = ?, status = ?, estimated_partecipation = ? WHERE guest_id = ?';
-        db.query(sql, [fullName, menuType, menuKids, needs, status, estimatedPartecipation, guestId], function(err) {
+        const sql = 'UPDATE guests SET full_name = ?, menu_type = ?, menu_kids = ?, needs = ?, status = ?, nightsNeeded = ?, estimated_partecipation = ? WHERE guest_id = ?';
+        db.query(sql, [fullName, menuType, menuKids, needs, status, nightsNeeded, estimatedPartecipation, guestId], function(err) {
             if (err) {
                 reject(err);
                 return;
@@ -99,7 +101,7 @@ exports.editMultipleGuests = async (guests) => {
 
             const promises = guests.map(guest => {
                 return new Promise((resolve, reject) => {
-                    const { guestId, fullName, menuType, menuKids, needs, status, estimatedPartecipation } = guest;
+                    const { guestId, fullName, menuType, menuKids, needs, status, nightsNeeded, estimatedPartecipation } = guest;
                     let updateSql = `UPDATE guests SET `;
                     const updateParams = [];
                     if (fullName !== undefined) {
@@ -122,6 +124,10 @@ exports.editMultipleGuests = async (guests) => {
                         updateParams.push(status);
                         updateSql += `status = ?, `;
                     }   
+                    if (nightsNeeded !== undefined) {
+                        updateParams.push(nightsNeeded);
+                        updateSql += `nights_needed = ?, `;
+                    }
                     if (estimatedPartecipation !== undefined) {
                         updateParams.push(estimatedPartecipation);
                         updateSql += `estimated_partecipation = ?, `;
