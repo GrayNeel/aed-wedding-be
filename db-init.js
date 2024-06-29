@@ -34,7 +34,7 @@ async function createTables() {
   const createInvitationsTable = `
     CREATE TABLE IF NOT EXISTS invitations (
       invitation_id INT PRIMARY KEY,
-      invitation_number INT NOT NULL UNIQUE AUTO_INCREMENT = 1,
+      invitation_number INT NOT NULL UNIQUE AUTO_INCREMENT,
       name VARCHAR(100) NOT NULL,
       status ENUM('Pending', 'Partially Accepted', 'Accepted', 'Declined') NOT NULL DEFAULT 'Pending',
       comment TEXT
