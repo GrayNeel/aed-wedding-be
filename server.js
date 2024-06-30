@@ -18,11 +18,15 @@ const apiLimiter = rateLimit({
   max: 1000, // limit each IP to 100 requests per windowMs
   message: 'Too many requests from this IP, please try again after an hour'
 });
+// Prevent HTTP Parameter pollution middlware
+const hpp = require('hpp');
+
 // Initialize expressJS
 const app = new express();
 const port = process.env.SERVER_PORT;
 app.use(apiLimiter);
 app.use(helmet());
+app.use(hpp());
 
 /** Import DB queries */
 const usersDao = require('./usersDao');
