@@ -69,7 +69,7 @@ exports.getAllGuestsOfInvitation = (invitationId) => {
 // Add a new guest of a given invitation to the database by adding name, surname and estimated_partecipation
 exports.addGuest = (guestId, invitationId, fullName, menuType, menuKids, needs, status, nightsNeeded, estimatedPartecipation) => {
     return new Promise((resolve, reject) => {
-        const sql = 'INSERT INTO guests (guest_id, invitation_id, full_name, menu_type, menu_kids, needs, status, nightsNeeded, estimated_partecipation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+        const sql = 'INSERT INTO guests (guest_id, invitation_id, full_name, menu_type, menu_kids, needs, status, nights_needed, estimated_partecipation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
         db.query(sql, [guestId, invitationId, fullName, menuType, menuKids, needs, status, nightsNeeded, estimatedPartecipation], function(err) {
             if (err) {
                 reject(err);

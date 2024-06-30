@@ -10,10 +10,10 @@ Content-Type: application/json
 GET http://localhost:3001/api/invitations
 
 ### Get an invitation
-GET http://localhost:3001/api/invitations/945906
+GET http://localhost:3001/api/invitations/NMSM0E
 
 ### Add guest to an invitation
-POST http://localhost:3001/api/invitations/544233/guests
+POST http://localhost:3001/api/invitations/NMSM0E/guests
 Content-Type: application/json
 
 {
@@ -22,10 +22,10 @@ Content-Type: application/json
 }
 
 ### Get all guests for an invitation
-GET http://localhost:3001/api/invitations/945906/guests
+GET http://localhost:3001/api/invitations/NMSM0E/guests
 
 ### Delete invitation
-DELETE http://localhost:3001/api/invitations/945906
+DELETE http://localhost:3001/api/invitations/NMSM0E
 
 ### Send confirmation
 PUT http://localhost:3001/api/invitations/544233

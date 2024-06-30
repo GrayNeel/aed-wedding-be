@@ -7,12 +7,22 @@ const express = require('express');
 const morgan = require('morgan');
 // This is a middleware that handles "session" (user) 
 const session = require('express-session');
+// Security headers middleware
+const helmet = require('helmet');
 // Express validator middleware 
 const { body, validationResult, check } = require('express-validator');
-
+// Express rate limit middleware
+const rateLimit = require('express-rate-limit');
+const apiLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour window
+  max: 1000, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again after an hour'
+});
 // Initialize expressJS
 const app = new express();
 const port = process.env.SERVER_PORT;
+app.use(apiLimiter);
+app.use(helmet());
 
 /** Import DB queries */
 const usersDao = require('./usersDao');
@@ -199,13 +209,13 @@ app.post('/api/invitations', body('name').isString().isLength({ min: 1 }), (req,
   if (!comment)
     comment = '';
 
-  // Generate a 6-digits characters ID while it exists on the database, until a valid one is found
-  let invitationId = Math.floor(100000 + Math.random() * 900000);
+  // Generate a 6 alphanumerical characters ID while it exists on the database, until a valid one is found
+  let invitationId = generateInvitationId();
   
   // Check that the invitationId is not already in use
   invitationsDao.getInvitationById(invitationId).then(invitation => {
     if (invitation) {
-      invitationId = Math.floor(100000 + Math.random() * 900000);
+      invitationId = generateInvitationId();
     }
   }).catch(err => {
     res.status(500).json({ error: 'An error occurred', description: err });
@@ -240,50 +250,57 @@ app.post('/api/invitations/:invitationId/guests',
     invitationsDao.getInvitationById(invitationId).then(invitation => {
       if (!invitation) {
         res.status(404).json({ error: 'Invitation not found' });
+        return;
       }
-    }).catch(err => {
-      res.status(500).json({ error: 'An error occurred', description: err });
-    });
 
-    let fullName = req.body.fullName;
-    let estimatedPartecipation = req.body.estimatedPartecipation;
-    let menuType = req.body.menuType;
-    let menuKids = req.body.menuKids;
-    let needs = req.body.needs;
-    let status = req.body.status;
-
-    // If menuType is null set Standard as default
-    if (!menuType)
-      menuType = 'Standard';
-
-    // If menuKids is null set false as default
-    if (!menuKids)
-      menuKids = false;
-
-    // If needs is null set Autonomous as default
-    if (!needs)
-      needs = 'Autonomous';
-
-    // If status is null set Pending as default
-    if (!status)
-      status = 'Pending';
-
-    // Get the latest maximum guestId and increment it by 1
-    guestsDao.getMaxGuestId().then(guestId => {
-      if (!guestId)
-        guestId = 1;
-      else
-        guestId++;
-
-      // Add the new guest to the database
-      guestsDao.addGuest(guestId, invitationId, fullName, menuType, menuKids, needs, status, estimatedPartecipation).then(guestId => {
-        res.status(201).json({ guestId: guestId });
+      let fullName = req.body.fullName;
+      let estimatedPartecipation = req.body.estimatedPartecipation;
+      let menuType = req.body.menuType;
+      let menuKids = req.body.menuKids;
+      let needs = req.body.needs;
+      let status = req.body.status;
+      let nightsNeeded = req.body.nightsNeeded;
+  
+      // If menuType is null set Standard as default
+      if (!menuType)
+        menuType = 'Standard';
+  
+      // If menuKids is null set false as default
+      if (!menuKids)
+        menuKids = false;
+  
+      // If needs is null set Autonomous as default
+      if (!needs)
+        needs = 'Autonomous';
+  
+      // If status is null set Pending as default
+      if (!status)
+        status = 'Pending';
+  
+      // If nightsNeeded is null set None as default
+      if (!nightsNeeded)
+        nightsNeeded = 'None';
+  
+      // Get the latest maximum guestId and increment it by 1
+      guestsDao.getMaxGuestId().then(guestId => {
+        if (!guestId)
+          guestId = 1;
+        else
+          guestId++;
+  
+        // Add the new guest to the database
+        guestsDao.addGuest(guestId, invitationId, fullName, menuType, menuKids, needs, status, nightsNeeded, estimatedPartecipation).then(guestId => {
+          res.status(201).json({ guestId: guestId });
+        }).catch(err => {
+          res.status(500).json({ error: 'An error occurred', description: err });
+        });
+  
       }).catch(err => {
         res.status(500).json({ error: 'An error occurred', description: err });
       });
-
     }).catch(err => {
       res.status(500).json({ error: 'An error occurred', description: err });
+      return;
     });
 });
 
@@ -526,3 +543,13 @@ app.use(function (req, res) {
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
+
+/** Funzioni di supporto **/
+function generateInvitationId() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let invitationId = '';
+  for (let i = 0; i < 6; i++) {
+    invitationId += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return invitationId;
+}

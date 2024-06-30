@@ -33,7 +33,7 @@ async function createTables() {
 
   const createInvitationsTable = `
     CREATE TABLE IF NOT EXISTS invitations (
-      invitation_id INT PRIMARY KEY,
+      invitation_id VARCHAR(6) PRIMARY KEY,
       invitation_number INT NOT NULL UNIQUE AUTO_INCREMENT,
       name VARCHAR(100) NOT NULL,
       status ENUM('Pending', 'Partially Accepted', 'Accepted', 'Declined') NOT NULL DEFAULT 'Pending',
@@ -44,7 +44,7 @@ async function createTables() {
   const createGuestsTable = `
     CREATE TABLE IF NOT EXISTS guests (
       guest_id INT AUTO_INCREMENT PRIMARY KEY,
-      invitation_id INT,
+      invitation_id VARCHAR(6),
       full_name VARCHAR(100) NOT NULL,
       menu_type ENUM('Standard', 'Vegetarian', 'Vegan', 'Gluten-Free', 'Lactose-Free') NOT NULL DEFAULT 'Standard',
       menu_kids BOOLEAN NOT NULL DEFAULT FALSE,
